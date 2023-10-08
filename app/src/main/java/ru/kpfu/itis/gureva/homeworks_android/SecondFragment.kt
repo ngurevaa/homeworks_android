@@ -15,6 +15,7 @@ class SecondFragment : Fragment(R.layout.fragment_second) {
         if (!arg.equals("")) {
             binding?.tvInput?.text = arg
         }
+        println(arg)
 
 
         binding?.run {

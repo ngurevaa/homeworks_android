@@ -4,4 +4,5 @@
     <string name="first_fragment">First Fragment</string>
     <string name="second_fragment">Second Fragment</string>
     <string name="third_fragment">Third Fragment</string>
+    <string name="btn_save">Save</string>
 </resources>

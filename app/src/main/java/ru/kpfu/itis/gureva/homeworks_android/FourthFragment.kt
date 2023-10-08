@@ -9,6 +9,10 @@ class FourthFragment : Fragment(R.layout.fragment_fourth) {
     private var binding: FragmentFourthBinding? = null
     private var counter = 0
 
+    private val ARG_FIRST = "arg_first"
+    private val ARG_SECOND = "arg_second"
+    private val ARG_THIRD = "arg_third"
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentFourthBinding.bind(view)
@@ -50,11 +54,6 @@ class FourthFragment : Fragment(R.layout.fragment_fourth) {
         savedInstanceState?.getString(ARG_THIRD).let {
             binding?.tv3?.text = it
         }
-    }
-    companion object {
-        private const val ARG_FIRST = "arg_first"
-        private const val ARG_SECOND = "arg_second"
-        private const val ARG_THIRD = "arg_third"
     }
 
     override fun onDestroyView() {

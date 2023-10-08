@@ -17,8 +17,8 @@ class MainActivity : AppCompatActivity(), OnSelectedButtonListener {
         }
         else {
             supportFragmentManager.beginTransaction()
-                .replace(R.id.first_container, FirstFragment())
-                .replace(R.id.second_container, FourthFragment())
+                .add(R.id.first_container, FirstFragment())
+                .add(R.id.second_container, FourthFragment())
                 .commit()
         }
     }

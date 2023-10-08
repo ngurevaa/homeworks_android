@@ -9,10 +9,6 @@ class FourthFragment : Fragment(R.layout.fragment_fourth) {
     private var binding: FragmentFourthBinding? = null
     private var counter = 0
 
-    private val ARG_FIRST = "arg_first"
-    private val ARG_SECOND = "arg_second"
-    private val ARG_THIRD = "arg_third"
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentFourthBinding.bind(view)
@@ -31,29 +27,6 @@ class FourthFragment : Fragment(R.layout.fragment_fourth) {
             }
         }
         counter++
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        binding?.run {
-            outState.putString(ARG_FIRST, tv1.text.toString())
-            outState.putString(ARG_SECOND, tv2.text.toString())
-            outState.putString(ARG_THIRD, tv3.text.toString())
-        }
-        super.onSaveInstanceState(outState)
-    }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-
-        savedInstanceState?.getString(ARG_FIRST).let {
-            binding?.tv1?.text = it
-        }
-        savedInstanceState?.getString(ARG_SECOND).let {
-            binding?.tv2?.text = it
-        }
-        savedInstanceState?.getString(ARG_THIRD).let {
-            binding?.tv3?.text = it
-        }
     }
 
     override fun onDestroyView() {

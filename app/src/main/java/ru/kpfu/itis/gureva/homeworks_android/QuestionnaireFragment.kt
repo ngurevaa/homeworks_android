@@ -27,7 +27,10 @@ class QuestionnaireFragment : Fragment(R.layout.fragment_questionnaire) {
                 checkAnswers()
             }
 
-            val questions = questionNumber!! % Questions.list.size
+            var questions = 0
+            if (questionNumber != null) {
+                questions = questionNumber % Questions.list.size
+            }
             val question = Questions.list[questions]
 
             tvQuestionNumber.text = questionNumber.toString()
@@ -52,7 +55,9 @@ class QuestionnaireFragment : Fragment(R.layout.fragment_questionnaire) {
                     }
                     listOfButtons[i].isChecked = true
 
-                    Answers.answers[questionNumber - 1] = true
+                    if (questionNumber != null) {
+                        Answers.answers[questionNumber - 1] = true
+                    }
 
                     if (itemCount == questionNumber) {
                         checkAnswers()

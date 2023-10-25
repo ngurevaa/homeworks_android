@@ -33,31 +33,31 @@ class StartFragment : Fragment(R.layout.fragment_start) {
         // ----------------------------------------------------------------------------------------
         // обязательная часть задания
         with(binding) {
-//            this?.etPhone?.addTextChangedListener(object : TextWatcher {
-//                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-//                }
-//
-//                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                    if (s != null) {
-//                        if (s.length >= 2 && s.substring(0, 2) == "89") {
-//                            val numberCounter = getNumberCount(s)
-//                            checkNumberCount(numberCounter, 11, R.string.et_phone_error_length_11)
-//                        }
-//                        else if (s.length >= 3 && s.substring(0, 3) == "+79") {
-//                            var numberCounter = getNumberCount(s)
-//                            checkNumberCount(numberCounter, 11, R.string.et_phone_error_length_12)
-//                        }
-//                        else {
-//                            etPhone.error = getString(R.string.et_phone_error_start)
-//                            phoneIsValidated = false
-//                        }
-//                    }
-//                }
-//
-//                override fun afterTextChanged(s: Editable?) {
-//                    btnStart.isEnabled = phoneIsValidated && questionIsValidated
-//                }
-//            })
+            this?.etPhone?.addTextChangedListener(object : TextWatcher {
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    if (s != null) {
+                        if (s.length >= 2 && s.substring(0, 2) == "89") {
+                            val numberCounter = getNumberCount(s)
+                            checkNumberCount(numberCounter, 11, R.string.et_phone_error_length_11)
+                        }
+                        else if (s.length >= 3 && s.substring(0, 3) == "+79") {
+                            var numberCounter = getNumberCount(s)
+                            checkNumberCount(numberCounter, 11, R.string.et_phone_error_length_12)
+                        }
+                        else {
+                            etPhone.error = getString(R.string.et_phone_error_start)
+                            phoneIsValidated = false
+                        }
+                    }
+                }
+
+                override fun afterTextChanged(s: Editable?) {
+                    btnStart.isEnabled = phoneIsValidated && questionIsValidated
+                }
+            })
             //--------------------------------------------------------------------------------------
 
             // опциональная часть задание 1
@@ -83,7 +83,7 @@ class StartFragment : Fragment(R.layout.fragment_start) {
                             addText("$s-", this)
                         }
                         if (s.length != 18) {
-                            etPhone.error = "Invalid phone number"
+                            etPhone.error = getString(R.string.et_phone_error_invalid_phone)
                             phoneIsValidated = false
                         }
                         else {

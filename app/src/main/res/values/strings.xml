@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">homeworks_android</string>
+    <string name="btn_start">start</string>
+    <string name="et_phone_hint">Enter the phone number</string>
+    <string name="et_questions_hint">Enter the number of questions</string>
+    <string name="et_phone_error_start">The number must start with 89 or +79</string>
+    <string name="et_phone_error_length_12">The phone number must consist of 12 characters</string>
+    <string name="et_phone_error_length_11">The phone number must consist of 11 characters</string>
+    <string name="et_questions_error_positive_number">The number of questions must be positive</string>
+    <string name="btn_save">save</string>
 </resources>

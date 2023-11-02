@@ -2,4 +2,5 @@
     <string name="app_name">homeworks_android</string>
     <string name="cat_input_error">Введите число от 0 до 45</string>
     <string name="new_cat_input_error">Введите число от 0 до 5</string>
+    <string name="snackbar_delete">Отменить удаление</string>
 </resources>

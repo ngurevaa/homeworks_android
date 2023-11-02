@@ -19,7 +19,9 @@ class CatAdapter(
     private var items: MutableList<Cat>,
     private val onLikeClicked: ((Int, Cat) -> Unit),
     private val onCatClicked: ((CatViewHolder, Int) -> Unit),
-    private val onButtonClicked: ((Int) -> Unit)
+    private val onButtonClicked: ((Int) -> Unit),
+    private val onCatLongClicked: ((ItemCatBinding, Boolean) -> Unit),
+    private val onDeleteClicked: ((Int) -> Unit)
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun getItems() = items
 
@@ -56,8 +58,11 @@ class CatAdapter(
                     parent,
                     false
                 ),
+                itemCount,
                 onLikeClicked = onLikeClicked,
-                onCatClicked = onCatClicked
+                onCatClicked = onCatClicked,
+                onCatLongClicked = onCatLongClicked,
+                onDeleteClicked = onDeleteClicked
             )
         }
     }
@@ -72,7 +77,7 @@ class CatAdapter(
             2 -> (holder as DataViewHolder).onBind()
             else -> {
                 (holder as CatViewHolder).onBind(items[position - position / 9 - 1])
-                ViewCompat.setTransitionName(holder.image, position.toString() + "_image")
+                ViewCompat.setTransitionName(holder.getImage(), position.toString() + "_image")
             }
         }
     }

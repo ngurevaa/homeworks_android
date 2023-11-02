@@ -3,10 +3,14 @@ package ru.kpfu.itis.gureva.homeworks_android.fragment
 import android.os.Bundle
 import android.transition.Fade
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import ru.kpfu.itis.gureva.homeworks_android.CatRepository
 import ru.kpfu.itis.gureva.homeworks_android.DetailsTransition
 import ru.kpfu.itis.gureva.homeworks_android.R
@@ -15,7 +19,7 @@ import ru.kpfu.itis.gureva.homeworks_android.databinding.FragmentCatBinding
 import ru.kpfu.itis.gureva.homeworks_android.databinding.ItemCatBinding
 import ru.kpfu.itis.gureva.homeworks_android.holder.CatViewHolder
 import ru.kpfu.itis.gureva.homeworks_android.model.Cat
-import java.util.ArrayList
+
 
 class CatFragment : Fragment(R.layout.fragment_cat) {
     private var binding: FragmentCatBinding? = null
@@ -33,12 +37,27 @@ class CatFragment : Fragment(R.layout.fragment_cat) {
             CatRepository.list.subList(0, catNumber),
             :: onLikeClicked,
             :: onCatClicked,
-            :: onButtonClicked
+            :: onButtonClicked,
+            :: onCatLongClicked,
+            :: onDeleteClicked
         )
 
         binding?.run {
             if (catNumber <= 12) {
                 rvCat.layoutManager = LinearLayoutManager(context)
+
+                val itemTouch = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+                    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                        return false
+                    }
+
+                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
+                        val position = viewHolder.adapterPosition
+                        onDeleteClicked(position)
+                    }
+                }
+                val itemTouchHelper = ItemTouchHelper(itemTouch)
+                itemTouchHelper.attachToRecyclerView(rvCat)
             } else {
                 val manager = GridLayoutManager(context, 2)
                 manager.spanSizeLookup = object : SpanSizeLookup() {
@@ -62,24 +81,13 @@ class CatFragment : Fragment(R.layout.fragment_cat) {
 
     private fun onCatClicked(holder: CatViewHolder, position: Int) {
         val details = DetailFragment.newInstance(position)
-//        details.sharedElementEnterTransition = DetailsTransition()
-//        details.enterTransition = Fade()
-//        exitTransition = Fade()
-//        details.sharedElementReturnTransition = DetailsTransition()
-//
-//        parentFragmentManager.beginTransaction()
-////            .setReorderingAllowed(true)
-//            .addSharedElement(binding.ivCat, "second_cat")
-//            .replace(fragmentContainerId, details)
-//            .addToBackStack(null)
-//            .commit()
         details.sharedElementEnterTransition = DetailsTransition()
         details.enterTransition = Fade()
         exitTransition = Fade()
         details.sharedElementReturnTransition = DetailsTransition()
         parentFragmentManager
             .beginTransaction()
-            .addSharedElement(holder.image, "kittenImage")
+            .addSharedElement(holder.getImage(), "kittenImage")
             .replace(R.id.main_container, details)
             .addToBackStack(null)
             .commit()
@@ -89,9 +97,37 @@ class CatFragment : Fragment(R.layout.fragment_cat) {
         DialogFragment(::onButtonCountClick).show(parentFragmentManager, "tag")
     }
 
+    private fun onCatLongClicked(binding: ItemCatBinding, repeat: Boolean) {
+        binding.run {
+            if (repeat) {
+                ivCat.visibility = View.INVISIBLE
+                tvCat.visibility = View.INVISIBLE
+                ivLike.visibility = View.INVISIBLE
+            }
+            else {
+                ivCat.visibility = View.VISIBLE
+                tvCat.visibility = View.VISIBLE
+                ivLike.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun onDeleteClicked(position: Int) {
+        var cat = adapter?.getItems()?.removeAt(position - position / 9 - 1)
+        adapter?.notifyItemRemoved(position)
+
+        binding?.root?.let { Snackbar.make(it, "", Snackbar.LENGTH_LONG)
+            .setAction(getString(R.string.snackbar_delete)) {
+                if (cat != null) {
+                    val newItems = ArrayList(adapter?.getItems())
+                    newItems.add(position - position / 9 - 1, cat)
+                    adapter?.updateItems(newItems)
+                }
+            }.show() }
+    }
+
     private fun onButtonCountClick(count: Int) {
         val newItems = ArrayList(adapter?.getItems())
-        println(newItems)
         var randomIndexNewItems: Int
         var randomIndexCatRepository: Int
 

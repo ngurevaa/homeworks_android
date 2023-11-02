@@ -3,13 +3,13 @@ package ru.kpfu.itis.gureva.homeworks_android.fragment
 import android.os.Bundle
 import android.transition.Fade
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 import ru.kpfu.itis.gureva.homeworks_android.CatRepository
 import ru.kpfu.itis.gureva.homeworks_android.DetailsTransition
@@ -39,7 +39,8 @@ class CatFragment : Fragment(R.layout.fragment_cat) {
             :: onCatClicked,
             :: onButtonClicked,
             :: onCatLongClicked,
-            :: onDeleteClicked
+            :: onDeleteClicked,
+            Glide.with(this)
         )
 
         binding?.run {
@@ -83,18 +84,17 @@ class CatFragment : Fragment(R.layout.fragment_cat) {
         val details = DetailFragment.newInstance(position)
         details.sharedElementEnterTransition = DetailsTransition()
         details.enterTransition = Fade()
-        exitTransition = Fade()
         details.sharedElementReturnTransition = DetailsTransition()
         parentFragmentManager
             .beginTransaction()
-            .addSharedElement(holder.getImage(), "kittenImage")
-            .replace(R.id.main_container, details)
+            .addSharedElement(holder.getImage(), TRANSITION_NAME)
+            .replace(fragmentContainerId, details)
             .addToBackStack(null)
             .commit()
     }
 
-    private fun onButtonClicked(position: Int) {
-        DialogFragment(::onButtonCountClick).show(parentFragmentManager, "tag")
+    private fun onButtonClicked() {
+        DialogFragment(::onButtonCountClick).show(parentFragmentManager, TAG)
     }
 
     private fun onCatLongClicked(binding: ItemCatBinding, repeat: Boolean) {
@@ -103,17 +103,21 @@ class CatFragment : Fragment(R.layout.fragment_cat) {
                 ivCat.visibility = View.INVISIBLE
                 tvCat.visibility = View.INVISIBLE
                 ivLike.visibility = View.INVISIBLE
+                ivDelete.visibility = View.VISIBLE
             }
             else {
                 ivCat.visibility = View.VISIBLE
                 tvCat.visibility = View.VISIBLE
                 ivLike.visibility = View.VISIBLE
+                ivDelete.visibility = View.INVISIBLE
             }
         }
     }
 
     private fun onDeleteClicked(position: Int) {
-        var cat = adapter?.getItems()?.removeAt(position - position / 9 - 1)
+        println(position)
+        val cat = adapter?.getItems()?.removeAt(position - position / 9 - 1)
+        println(adapter?.getItems()?.size)
         adapter?.notifyItemRemoved(position)
 
         binding?.root?.let { Snackbar.make(it, "", Snackbar.LENGTH_LONG)
@@ -121,6 +125,7 @@ class CatFragment : Fragment(R.layout.fragment_cat) {
                 if (cat != null) {
                     val newItems = ArrayList(adapter?.getItems())
                     newItems.add(position - position / 9 - 1, cat)
+                    adapter?.notifyItemChanged(position - 1)
                     adapter?.updateItems(newItems)
                 }
             }.show() }
@@ -132,9 +137,17 @@ class CatFragment : Fragment(R.layout.fragment_cat) {
         var randomIndexCatRepository: Int
 
         for (i in 1..count) {
-            randomIndexNewItems = (0 until (newItems.size)).random()
+            if (newItems.size == 0) {
+                randomIndexNewItems = 0
+            }
+            else {
+                randomIndexNewItems = (0 until (newItems.size)).random()
+            }
+
             randomIndexCatRepository = (0 until CatRepository.list.size).random()
-            newItems.add(randomIndexNewItems, CatRepository.list[randomIndexCatRepository])
+            var cat = CatRepository.list[randomIndexCatRepository]
+            cat.like = false
+            newItems.add(randomIndexNewItems, cat)
         }
         adapter?.updateItems(newItems)
     }
@@ -145,6 +158,8 @@ class CatFragment : Fragment(R.layout.fragment_cat) {
     }
 
     companion object {
+        private const val TRANSITION_NAME = "kittenImage"
+        private const val TAG = "cat_fragment_tag"
         private const val ARG_CAT_NUMBER = "arg_cat_number"
 
         fun newInstance(catNumber: Int) = CatFragment().apply {

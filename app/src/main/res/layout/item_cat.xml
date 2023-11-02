@@ -20,13 +20,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:srcCompat="@drawable/delete" />
+            app:srcCompat="@drawable/delete"
+            android:visibility="invisible"/>
+
         <ImageView
             android:id="@+id/iv_cat"
             android:layout_width="match_parent"
             android:scaleType="centerCrop"
             android:layout_height="200dp"
-            app:srcCompat="@drawable/sad"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -35,7 +36,6 @@
             android:id="@+id/tv_cat"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="sad cat"
             android:gravity="center"
             android:textSize="20sp"
             android:layout_marginTop="8dp"

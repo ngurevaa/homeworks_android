@@ -1,11 +1,9 @@
 package ru.kpfu.itis.gureva.homeworks_android
 
-import android.content.Context
 import android.transition.ChangeBounds
 import android.transition.ChangeImageTransform
 import android.transition.ChangeTransform
 import android.transition.TransitionSet
-import android.util.AttributeSet
 
 class DetailsTransition() : TransitionSet() {
     init {

@@ -8,13 +8,9 @@
     app:cardElevation="8dp"
     android:layout_margin="4dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_data"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="16dp"
             android:layout_marginTop="8dp"
@@ -24,7 +20,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Заголовок новости" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+            android:padding="8dp"/>
 </androidx.cardview.widget.CardView>

@@ -6,7 +6,6 @@ import android.text.TextWatcher
 import android.view.View
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import ru.kpfu.itis.gureva.homeworks_android.R
-import ru.kpfu.itis.gureva.homeworks_android.adapter.CatAdapter
 import ru.kpfu.itis.gureva.homeworks_android.databinding.FragmentDialogBinding
 
 class DialogFragment(

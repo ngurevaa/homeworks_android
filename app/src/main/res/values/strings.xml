@@ -3,4 +3,8 @@
     <string name="cat_input_error">Введите число от 0 до 45</string>
     <string name="new_cat_input_error">Введите число от 0 до 5</string>
     <string name="snackbar_delete">Отменить удаление</string>
+    <string name="hint_enter">Введите количество котов</string>
+    <string name="hint_new_enter">Введите число</string>
+    <string name="btn_start">старт</string>
+    <string name="btn_new_cats">новые коты</string>
 </resources>

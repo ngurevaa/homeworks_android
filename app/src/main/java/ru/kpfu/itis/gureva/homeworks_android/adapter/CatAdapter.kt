@@ -1,11 +1,11 @@
 package ru.kpfu.itis.gureva.homeworks_android.adapter
 
-import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.RequestManager
 import ru.kpfu.itis.gureva.homeworks_android.adapter.diffutil.CatDiffUtil
 import ru.kpfu.itis.gureva.homeworks_android.databinding.ItemButtonBinding
 import ru.kpfu.itis.gureva.homeworks_android.databinding.ItemCatBinding
@@ -19,9 +19,10 @@ class CatAdapter(
     private var items: MutableList<Cat>,
     private val onLikeClicked: ((Int, Cat) -> Unit),
     private val onCatClicked: ((CatViewHolder, Int) -> Unit),
-    private val onButtonClicked: ((Int) -> Unit),
+    private val onButtonClicked: (() -> Unit),
     private val onCatLongClicked: ((ItemCatBinding, Boolean) -> Unit),
-    private val onDeleteClicked: ((Int) -> Unit)
+    private val onDeleteClicked: ((Int) -> Unit),
+    private val glide: RequestManager
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     fun getItems() = items
 
@@ -62,7 +63,8 @@ class CatAdapter(
                 onLikeClicked = onLikeClicked,
                 onCatClicked = onCatClicked,
                 onCatLongClicked = onCatLongClicked,
-                onDeleteClicked = onDeleteClicked
+                onDeleteClicked = onDeleteClicked,
+                glide
             )
         }
     }
@@ -98,7 +100,7 @@ class CatAdapter(
 
     fun updateItems(newItems: List<Cat>) {
         val diff = CatDiffUtil(items, newItems)
-        var difference = DiffUtil.calculateDiff(diff)
+        val difference = DiffUtil.calculateDiff(diff)
         items.clear()
         items.addAll(newItems)
         difference.dispatchUpdatesTo(this)

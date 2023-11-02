@@ -1,13 +1,12 @@
 package ru.kpfu.itis.gureva.homeworks_android.fragment
 
 import android.os.Bundle
-import android.transition.TransitionInflater
 import android.view.View
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import ru.kpfu.itis.gureva.homeworks_android.CatRepository
 import ru.kpfu.itis.gureva.homeworks_android.R
 import ru.kpfu.itis.gureva.homeworks_android.databinding.FragmentDetailBinding
-import ru.kpfu.itis.gureva.homeworks_android.model.Cat
 
 class DetailFragment : Fragment(R.layout.fragment_detail) {
     private var binding: FragmentDetailBinding? = null
@@ -16,10 +15,10 @@ class DetailFragment : Fragment(R.layout.fragment_detail) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentDetailBinding.bind(view)
 
-        var position: Int = arguments?.getInt(ARG_CAT) ?: 0
+        val position: Int = arguments?.getInt(ARG_CAT) ?: 0
         val cat = CatRepository.list[position]
         binding?.run {
-            ivCat.setImageResource(cat.image)
+            Glide.with(this@DetailFragment).load(cat.image).into(ivCat)
             tvCat.text = cat.type
             tvDesc.text = cat.description
         }

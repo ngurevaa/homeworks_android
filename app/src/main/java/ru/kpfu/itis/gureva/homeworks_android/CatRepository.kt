@@ -1,0 +1,53 @@
+package ru.kpfu.itis.gureva.homeworks_android
+
+import ru.kpfu.itis.gureva.homeworks_android.model.Cat
+
+object CatRepository {
+    var list: MutableList<Cat> = mutableListOf(
+        Cat(1, R.drawable.sad, "грустный", false, "не расстаривайся все наладится"),
+        Cat(2, R.drawable.peaceful, "мирный", false, "миру мир"),
+        Cat(3, R.drawable.funny, "веселый", false, "молодец так держать!!!"),
+        Cat(4, R.drawable.hungry, "голодный", false, "пока сам не приготовишь еду, никто не приготовит"),
+        Cat(5, R.drawable.surprised, "удивленный", false, "ты когда узнал что завтра вставать в 6 утра"),
+        Cat(6, R.drawable.angry, "злой", false, "в магазине не было твоего любимого сока"),
+        Cat(7, R.drawable.sad, "грустный", false, "не расстаривайся все наладится"),
+        Cat(8, R.drawable.peaceful, "мирный", false, "миру мир"),
+        Cat(9, R.drawable.funny, "веселый", false, "молодец так держать!!!"),
+        Cat(10, R.drawable.hungry, "голодный", false, "пока сам не приготовишь еду, никто не приготовит"),
+        Cat(11, R.drawable.surprised, "удивленный", false, "ты когда узнал что завтра вставать в 6 утра"),
+        Cat(12, R.drawable.angry, "злой", false, "в магазине не было твоего любимого сока"),
+        Cat(13, R.drawable.sad, "грустный", false, "не расстаривайся все наладится"),
+        Cat(14, R.drawable.peaceful, "мирный", false, "миру мир"),
+        Cat(15, R.drawable.funny, "веселый", false, "молодец так держать!!!"),
+        Cat(16, R.drawable.hungry, "голодный", false, "пока сам не приготовишь еду, никто не приготовит"),
+        Cat(17, R.drawable.surprised, "удивленный", false, "ты когда узнал что завтра вставать в 6 утра"),
+        Cat(18, R.drawable.angry, "злой", false, "в магазине не было твоего любимого сока"),
+        Cat(19, R.drawable.sad, "грустный", false, "не расстаривайся все наладится"),
+        Cat(20, R.drawable.peaceful, "мирный", false, "миру мир"),
+        Cat(21, R.drawable.funny, "веселый", false, "молодец так держать!!!"),
+        Cat(22, R.drawable.hungry, "голодный", false, "пока сам не приготовишь еду, никто не приготовит"),
+        Cat(23, R.drawable.surprised, "удивленный", false, "ты когда узнал что завтра вставать в 6 утра"),
+        Cat(24, R.drawable.angry, "злой", false, "в магазине не было твоего любимого сока"),
+        Cat(25, R.drawable.sad, "грустный", false, "не расстаривайся все наладится"),
+        Cat(26, R.drawable.peaceful, "мирный", false, "миру мир"),
+        Cat(27, R.drawable.funny, "веселый", false, "молодец так держать!!!"),
+        Cat(28, R.drawable.hungry, "голодный", false, "пока сам не приготовишь еду, никто не приготовит"),
+        Cat(29, R.drawable.surprised, "удивленный", false, "ты когда узнал что завтра вставать в 6 утра"),
+        Cat(30, R.drawable.angry, "злой", false, "в магазине не было твоего любимого сока"),
+        Cat(31, R.drawable.sad, "грустный", false, "не расстаривайся все наладится"),
+        Cat(32, R.drawable.peaceful, "мирный", false, "миру мир"),
+        Cat(33, R.drawable.funny, "веселый", false, "молодец так держать!!!"),
+        Cat(34, R.drawable.hungry, "голодный", false, "пока сам не приготовишь еду, никто не приготовит"),
+        Cat(35, R.drawable.surprised, "удивленный", false, "ты когда узнал что завтра вставать в 6 утра"),
+        Cat(36, R.drawable.angry, "злой", false, "в магазине не было твоего любимого сока"),
+        Cat(37, R.drawable.sad, "грустный", false, "не расстаривайся все наладится"),
+        Cat(38, R.drawable.peaceful, "мирный", false, "миру мир"),
+        Cat(39, R.drawable.funny, "веселый", false, "молодец так держать!!!"),
+        Cat(40, R.drawable.hungry, "голодный", false, "пока сам не приготовишь еду, никто не приготовит"),
+        Cat(41, R.drawable.surprised, "удивленный", false, "ты когда узнал что завтра вставать в 6 утра"),
+        Cat(42, R.drawable.angry, "злой", false, "в магазине не было твоего любимого сока"),
+        Cat(43, R.drawable.sad, "грустный", false, "не расстаривайся все наладится"),
+        Cat(44, R.drawable.peaceful, "мирный", false, "миру мир"),
+        Cat(45, R.drawable.funny, "веселый", false, "молодец так держать!!!")
+    )
+}

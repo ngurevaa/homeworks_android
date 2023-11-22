@@ -29,12 +29,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="https" />
-                <data android:host="gureva" />
-                <data android:path="/itis/11-201" />
+                <data android:scheme="@string/scheme" />
+                <data android:host="@string/host" />
+                <data android:path="@string/path" />
             </intent-filter>
-
         </activity>
     </application>
-
 </manifest>

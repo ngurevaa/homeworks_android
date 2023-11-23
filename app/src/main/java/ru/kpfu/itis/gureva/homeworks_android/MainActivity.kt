@@ -7,8 +7,11 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
+import android.service.notification.Condition.SCHEME
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -39,7 +42,7 @@ class MainActivity : AppCompatActivity(), ReceiveListener, CoroutineListener {
     private lateinit var binding: ActivityMainBinding
     private var coroutinesList: MutableList<Deferred<Int>>? = null
     private var notificationHandler: NotificationHandler? = null
-    private lateinit var receiver: BroadcastReceiver
+    private var receiver: BroadcastReceiver? = null
     private val randomFrom = 1
     private val randomTo = 10
 
@@ -161,6 +164,8 @@ class MainActivity : AppCompatActivity(), ReceiveListener, CoroutineListener {
     override fun onPause() {
         super.onPause()
 
+        unregisterReceiver(receiver)
+
         if (CoroutinesFragment.stopOnBackground) {
             var count = 0
             coroutinesList?.forEach {
@@ -177,7 +182,24 @@ class MainActivity : AppCompatActivity(), ReceiveListener, CoroutineListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val permission = Manifest.permission.POST_NOTIFICATIONS
             if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-
+                // third optional task
+                AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.message_go_to_setting))
+                    .setNeutralButton(getString(R.string.btn_settings)) { _, _ ->
+                        Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            data = Uri.fromParts(
+                                SCHEME,
+                                packageName,
+                                null
+                            )
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        }.also {
+                            startActivity(it)
+                        }
+                    }
+                    .show()
+            }
+            else {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
                     val dialog = AlertDialog.Builder(this)
                         .setMessage(getString(R.string.repeated_permission_message))
@@ -205,12 +227,33 @@ class MainActivity : AppCompatActivity(), ReceiveListener, CoroutineListener {
     }
 
     override fun setOnReceiveListener(intent: Intent) {
-        receiver.onReceive(this, intent)
+        receiver?.onReceive(this, intent)
     }
 
-    override fun onStop() {
-        super.onStop()
-        unregisterReceiver(receiver)
+    override fun onResume() {
+        super.onResume()
+
+        receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val isAirplaneModeEnabled = intent?.getBooleanExtra(AIRPLANE_MODE_EXTRA_NAME, false) ?: return
+
+                (supportFragmentManager.findFragmentById(fragmentContainerId) as? HomeFragment)
+                    ?.view?.findViewById<Button>(R.id.btn_show)?.isEnabled = !isAirplaneModeEnabled
+
+                (supportFragmentManager.findFragmentById(fragmentContainerId) as? CoroutinesFragment)
+                    ?.view?.findViewById<Button>(R.id.btn_start)?.isEnabled = !isAirplaneModeEnabled
+
+                binding.run {
+                    if (isAirplaneModeEnabled) {
+                        cvAirplaneMode.root.visibility = View.VISIBLE
+                    }
+                    else {
+                        cvAirplaneMode.root.visibility = View.INVISIBLE
+                    }
+                }
+            }
+        }
+        ContextCompat.registerReceiver(this, receiver, IntentFilter(Intent.ACTION_AIRPLANE_MODE_CHANGED), ContextCompat.RECEIVER_EXPORTED)
     }
 
     companion object {
@@ -218,5 +261,6 @@ class MainActivity : AppCompatActivity(), ReceiveListener, CoroutineListener {
         const val AIRPLANE_MODE_EXTRA_NAME = "state"
         const val FROM_NOTIFICATION_EXTRA_NAME = "from_notification"
         const val SETTINGS_EXTRA_NAME = "settings"
+        private const val SCHEME = "package"
     }
 }

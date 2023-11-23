@@ -38,62 +38,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 val title = etTitle.text.toString()
                 val description = etDescription.text.toString()
 
-                notificationHandler = NotificationHandler(requireContext())
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    val permission = Manifest.permission.POST_NOTIFICATIONS
-
-                    if (ContextCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED) {
-                        notificationHandler?.createNotification(title, description,
-                            NotificationsFragment.importance,
-                            NotificationsFragment.visibility,
-                            NotificationsFragment.hideContent,
-                            NotificationsFragment.addAction
-                        )
-                    }
-                    else {
-                        if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), permission)) {
-                            val dialog = AlertDialog.Builder(requireContext())
-                                .setMessage(getString(R.string.repeated_permission_message))
-                                .setPositiveButton(getString(R.string.give_permission)) { _, _ ->
-                                    ActivityCompat.requestPermissions(
-                                        requireActivity(),
-                                        arrayOf(permission),
-                                        MainActivity.POST_NOTIFICATIONS_REQUEST_CODE
-                                    )
-                                }
-                                .setNegativeButton(getString(R.string.do_not_give_permission)) { _, _ -> }
-                                .show()
-
-                            val color = ContextCompat.getColor(requireContext(), R.color.brown)
-                            dialog.run {
-                                getButton(DialogInterface.BUTTON_POSITIVE).setTextColor(color)
-                                getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(color)
-                            }
-                        }
-                        else {
-                            // third optional task
-                            AlertDialog.Builder(requireContext())
-                                .setMessage(getString(R.string.message_go_to_setting))
-                                .setNeutralButton(getString(R.string.btn_settings)) { _, _ ->
-                                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                                        data = Uri.fromParts(SCHEME, requireContext().packageName, null)
-                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                    }.also {
-                                        startActivity(it)
-                                    }
-                                }
-                                .show()
-                        }
-                    }
-                }
-                else {
-                    notificationHandler?.createNotification(title, description,
+                notificationHandler = NotificationHandler(requireContext()).also {
+                    it.createNotification(title, description,
                         NotificationsFragment.importance,
                         NotificationsFragment.visibility,
                         NotificationsFragment.hideContent,
-                        NotificationsFragment.addAction
-                    )
+                        NotificationsFragment.addAction)
                 }
             }
         }
@@ -104,9 +54,5 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding = null
         notificationHandler = null
         airplaneModeUtil = null
-    }
-
-    companion object {
-        private const val SCHEME = "package"
     }
 }

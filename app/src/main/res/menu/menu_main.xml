@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/home"
+        android:title="@string/home"
+        android:icon="@drawable/home"
+        android:enabled="true" />
+
+    <item
+        android:id="@+id/notifications"
+        android:title="@string/notifications"
+        android:icon="@drawable/notifications"
+        android:enabled="true"/>
+
+    <item
+        android:id="@+id/coroutines"
+        android:title="@string/coroutines"
+        android:icon="@drawable/coroutines"
+        android:enabled="true"/>
+</menu>

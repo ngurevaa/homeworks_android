@@ -1,3 +1,26 @@
 <resources>
     <string name="app_name">homeworks_android</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="btn_sign_in">Sign in</string>
+    <string name="sign_up_hint">Don\'t have an account?</string>
+    <string name="btn_sign_up">Sign up</string>
+    <string name="name_hint">Name</string>
+    <string name="phone_hint">Phone</string>
+    <string name="login_error_title">Login error</string>
+    <string name="login_error_message">Incorrect email or password. Please try again.</string>
+    <string name="btn_positive">OK</string>
+    <string name="registration_dialog_title">Registration was successful</string>
+    <string name="registration_dialog_message">Please, log in to your account.</string>
+    <string name="email_existing_error">User with such an email exists</string>
+    <string name="favourite_films">Favourite films</string>
+    <string name="all_films">All films</string>
+    <string name="tv_add_film">Add film</string>
+    <string name="release_year_hint">Release year</string>
+    <string name="btn_save">Save</string>
+    <string name="description_hint">Description</string>
+    <string name="film_saving_error_title">Error</string>
+    <string name="film_saving_error_message">A film with the same name and year of release has already been saved in the film library/</string>
+    <string name="film_saving_title">The film was saved successfully</string>
+    <string name="no_available_films">No available films</string>
 </resources>

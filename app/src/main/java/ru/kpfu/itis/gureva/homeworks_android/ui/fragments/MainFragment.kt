@@ -71,36 +71,35 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             if (allFilms?.size == 0) {
                 tvFilms.text = getString(R.string.no_available_films)
             } else {
-                val films = ArrayList<FilmModel>()
-                films.addAll(allFilms!!)
                 rvFilms.adapter = filmAdapter
-                println(films)
-                filmAdapter?.submitList(films)
+                val list = ArrayList<FilmModel>()
+                list.addAll(allFilms!!)
+                filmAdapter?.submitList(list)
             }
         }
     }
 
     private fun onLikeClicked(filmModel: FilmModel) {
-        lifecycleScope.launch {
-            if (filmModel.isFavourite) {
-                userId?.let { favouriteRepository?.delete(it, filmModel.id) }
-            }
-            else {
-                userId?.let { favouriteRepository?.save(it, filmModel.id) }
-            }
-        }
-        val index = allFilms?.indexOf(filmModel)
-
-        val list = ArrayList<FilmModel>()
-        allFilms?.let { list.addAll(it) }
-        println(filmAdapter?.currentList)
+        val index = allFilms?.indexOfFirst { it.id == filmModel.id }
         if (index != null) {
+            lifecycleScope.launch {
+                if (allFilms?.get(index)?.isFavourite == true) {
+                    userId?.let { favouriteRepository?.delete(it, filmModel.id) }
+                }
+                else {
+                    userId?.let { favouriteRepository?.save(it, filmModel.id) }
+                }
+            }
+
+            val value = allFilms?.get(index)?.copy()
             allFilms?.removeAt(index)
-            allFilms?.add(index, filmModel.copy())
-            allFilms?.get(index)?.isFavourite = !filmModel.isFavourite
+            value?.apply { isFavourite = !isFavourite }?.let { allFilms?.add(index, it) }
         }
-        filmAdapter?.submitList(allFilms?.toList())
+        val list = ArrayList<FilmModel>()
+        list.addAll(allFilms!!)
+        filmAdapter?.submitList(list)
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

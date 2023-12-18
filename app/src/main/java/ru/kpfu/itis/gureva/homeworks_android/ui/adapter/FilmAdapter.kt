@@ -19,8 +19,6 @@ class FilmAdapter(
     override fun areItemsTheSame(oldItem: FilmModel, newItem: FilmModel): Boolean = oldItem.id == newItem.id
 
     override fun areContentsTheSame(oldItem: FilmModel, newItem: FilmModel): Boolean {
-        Log.e("old", oldItem.toString())
-        Log.e("new", newItem.toString())
         return oldItem == newItem
     }
 
@@ -48,7 +46,7 @@ class FilmAdapter(
     override fun onBindViewHolder(holder: FilmViewHolder, position: Int, payloads: MutableList<Any>
     ) {
         if (payloads.isNotEmpty()) {
-            (payloads.first() as Boolean).let {
+            (payloads.first() as Bundle).getBoolean("").let {
                 holder.changeLikeStatus(it)
             }
         }

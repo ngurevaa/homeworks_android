@@ -19,7 +19,6 @@ class FilmViewHolder(
     }
 
     fun onBind(film: FilmModel) {
-        Log.e("fjvhjfbhf", film.isFavourite.toString())
         this.film = film
         binding.run {
             tvName.text = film.name

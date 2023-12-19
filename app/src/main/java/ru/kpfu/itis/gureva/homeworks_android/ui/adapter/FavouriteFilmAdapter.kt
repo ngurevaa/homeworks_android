@@ -1,6 +1,7 @@
 package ru.kpfu.itis.gureva.homeworks_android.ui.adapter
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -16,7 +17,11 @@ class FavouriteFilmAdapter(
     DiffUtil.ItemCallback<FilmModel>() {
     override fun areItemsTheSame(oldItem: FilmModel, newItem: FilmModel): Boolean = oldItem.id == newItem.id
 
-    override fun areContentsTheSame(oldItem: FilmModel, newItem: FilmModel): Boolean = oldItem == newItem
+    override fun areContentsTheSame(oldItem: FilmModel, newItem: FilmModel): Boolean {
+        Log.e("old", oldItem.toString())
+        Log.e("new", newItem.toString())
+        return oldItem == newItem
+    }
 
     override fun getChangePayload(oldItem: FilmModel, newItem: FilmModel): Any? {
         val bundle = Bundle()
@@ -41,7 +46,7 @@ class FavouriteFilmAdapter(
     override fun onBindViewHolder(holder: FavouriteFilmViewHolder, position: Int, payloads: MutableList<Any>
     ) {
         if (payloads.isNotEmpty()) {
-            (payloads.first() as Boolean).let {
+            (payloads.first() as Bundle).getBoolean("").let {
                 holder.changeLikeStatus(it)
             }
         }

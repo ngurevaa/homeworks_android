@@ -31,4 +31,11 @@ class FavouriteRepository(
             favouriteDao.delete(userId, filmId)
         }
     }
+
+    suspend fun checkFilmStatus(userId: Int, filmId: Int): Boolean {
+        return withContext(Dispatchers.IO) {
+            val status = favouriteDao.checkFilmStatus(userId, filmId)
+            return@withContext status != null
+        }
+    }
 }

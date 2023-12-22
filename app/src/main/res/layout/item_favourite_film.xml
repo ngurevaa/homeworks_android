@@ -14,7 +14,6 @@
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Холодное сердце"
             android:textSize="24sp"
             android:padding="8dp"
             android:textColor="@color/black"

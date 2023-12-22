@@ -14,7 +14,6 @@
             android:id="@+id/tv_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Холодное сердце"
             android:textSize="24sp"
             android:padding="8dp"
             android:textColor="@color/black"
@@ -36,7 +35,6 @@
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_rating"
             android:textSize="24sp"
-            android:text="5.0"
             android:textColor="@color/black"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

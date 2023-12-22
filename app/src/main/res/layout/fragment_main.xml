@@ -11,8 +11,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/favourite_films"
-        android:textSize="24sp"
         android:textColor="@color/black"
+        android:textSize="24sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_profile" />
@@ -23,10 +24,10 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/rv_favourite_films"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_favourite_films"
-        app:layout_constraintBottom_toTopOf="@id/rv_favourite_films"/>
+        app:layout_constraintTop_toBottomOf="@id/tv_favourite_films" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_films"
@@ -34,10 +35,20 @@
         android:layout_height="wrap_content"
         android:text="@string/all_films"
         android:textColor="@color/black"
-        android:textSize="24sp"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/spinner_sort"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rv_favourite_films"
+        app:layout_constraintTop_toBottomOf="@id/rv_favourite_films" />
+
+    <Spinner
+        android:id="@+id/spinner_sort"
+        android:layout_width="350dp"
+        android:layout_height="30dp"
+        android:entries="@array/sort"
+        app:layout_constraintTop_toBottomOf="@id/tv_films"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/rv_films"/>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -48,25 +59,26 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_films" />
+        app:layout_constraintTop_toBottomOf="@+id/spinner_sort" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_add"
         style="?attr/floatingActionButtonSmallStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/empty_heart"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"/>
+        app:srcCompat="@drawable/add" />
 
     <Button
         android:id="@+id/btn_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/btn_profile"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

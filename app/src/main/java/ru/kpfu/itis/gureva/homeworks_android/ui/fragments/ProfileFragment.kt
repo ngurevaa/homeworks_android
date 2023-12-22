@@ -86,6 +86,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             }
 
             btnDeleteProfile.setOnClickListener {
+                AppSharedPreferences.getSP(requireContext()).edit {
+                    putBoolean(AppSharedPreferences.IS_LOGIN, false)
+                }
+
                 lifecycleScope.launch { userId?.let { it1 -> userRepository?.deleteById(it1) } }
 
                 parentFragmentManager.beginTransaction()
@@ -101,7 +105,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 layoutPhone.error = getString(R.string.empty_phone_error)
                 return false
             }
-            else if (RegexUtil.check(RegexUtil.PHONE, etPhone.text.toString())) {
+            else if (!RegexUtil.check(RegexUtil.PHONE, etPhone.text.toString())) {
                 layoutPhone.error = getString(R.string.invalid_phone)
                 return false
             }

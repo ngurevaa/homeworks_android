@@ -9,7 +9,6 @@ class RatingRepository(private val dao: RatingDao) {
     suspend fun getByFilmId(filmId: Int): Double {
         return withContext(Dispatchers.IO) {
             val list = dao.getById(filmId)
-            println("List: $list")
             var sum = 0.0
             list.forEach {
                 sum += it

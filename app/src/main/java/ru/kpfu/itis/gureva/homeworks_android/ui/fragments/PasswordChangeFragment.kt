@@ -34,7 +34,7 @@ class PasswordChangeFragment : Fragment(R.layout.fragment_password_change) {
                 lifecycleScope.launch {
                     val oldPassword = userRepository?.getById(userId!!)?.password
 
-                    if (oldPasswordInput == oldPassword) {
+                    if (PasswordUtil.encrypt(oldPasswordInput) == oldPassword) {
                         val newPassword = etNewPassword.text.toString()
 
                         if (checkPasswordValid()) {

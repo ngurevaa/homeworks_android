@@ -3,6 +3,7 @@ package ru.kpfu.itis.gureva.homeworks_android.ui.fragments
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -48,6 +49,34 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         if (i != -1) userId = i
 
         binding?.run {
+            lifecycleScope.launch {
+                outputOfFavouriteFilms()
+                outputOfAllFilms()
+                spinnerSort.setSelection(0, true)
+
+                spinnerSort.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                        when (position) {
+                            0 -> {
+                                allFilms?.sortByDescending { it.releaseYear }
+                            }
+                            1 -> {
+                                allFilms?.sortBy { it.releaseYear }
+                            }
+                            2 -> {
+                                allFilms?.sortByDescending { it.rating }
+                            }
+                            else -> {
+                                allFilms?.sortBy { it.rating }
+                            }
+                        }
+                        filmAdapter?.submitList(allFilms?.toList())
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {}
+                }
+            }
+
             btnAdd.setOnClickListener {
                 parentFragmentManager.beginTransaction()
                     .replace(fragmentContainerId, FilmAddingFragment())
@@ -61,11 +90,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
                     .addToBackStack(null)
                     .commit()
             }
-
-            lifecycleScope.launch {
-                outputOfFavouriteFilms()
-                outputOfAllFilms()
-            }
         }
     }
 
@@ -78,7 +102,17 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private suspend fun outputOfAllFilms() {
         allFilms = allFilmsRepository?.getAll() as MutableList<FilmModel>?
-        allFilms?.forEach {film ->
+//        allFilms?.forEach {film ->
+//            val status = userId?.let { favouriteRepository?.checkFilmStatus(it, film.id) }
+//            if (status != null) {
+//                film.isFavourite = status
+//            }
+//            film.rating = ratingRepository?.getByFilmId(film.id) ?: 0.0
+//        }
+
+        val iterator = allFilms?.iterator()
+        while (iterator?.hasNext() == true) {
+            val film = iterator.next()
             val status = userId?.let { favouriteRepository?.checkFilmStatus(it, film.id) }
             if (status != null) {
                 film.isFavourite = status

@@ -14,7 +14,7 @@
     <string name="registration_dialog_message">Please, log in to your account.</string>
     <string name="email_existing_error">User with such an email exists</string>
     <string name="favourite_films">Favourite films</string>
-    <string name="all_films">All films</string>
+    <string name="all_films">All films sort by</string>
     <string name="tv_add_film">Add film</string>
     <string name="release_year_hint">Release year</string>
     <string name="btn_save">Save</string>
@@ -43,4 +43,10 @@
     <string name="empty_phone_error">Phone can not be empty</string>
     <string name="invalid_phone">Invalid phone</string>
     <string name="empty_release_year">Release year can not be empty</string>
+    <string-array name="sort">
+        <item>year of release in descending order</item>
+        <item>year of release in ascending order</item>
+        <item>rating in descending order</item>
+        <item>rating in ascending order</item>
+    </string-array>
 </resources>

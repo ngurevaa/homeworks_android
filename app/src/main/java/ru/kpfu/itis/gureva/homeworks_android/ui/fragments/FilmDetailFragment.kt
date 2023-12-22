@@ -5,10 +5,10 @@ import android.view.View
 import android.widget.RatingBar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.coroutines.launch
 import ru.kpfu.itis.gureva.homeworks_android.R
 import ru.kpfu.itis.gureva.homeworks_android.data.db.AppDatabase
+import ru.kpfu.itis.gureva.homeworks_android.data.db.AppSharedPreferences
 import ru.kpfu.itis.gureva.homeworks_android.databinding.FragmentFilmDetailBinding
 import ru.kpfu.itis.gureva.homeworks_android.model.RatingModel
 import ru.kpfu.itis.gureva.homeworks_android.utils.FilmRepository
@@ -26,7 +26,7 @@ class FilmDetailFragment : Fragment(R.layout.fragment_film_detail) {
         ratingRepository = RatingRepository(AppDatabase.getDatabase(requireContext()).ratingDao())
 
         val filmId = arguments?.getInt(ARG_FILM_ID) ?: 0
-        val userId = arguments?.getInt(ARG_USER_ID) ?: 0
+        val userId = AppSharedPreferences.getSP(requireContext()).getInt(AppSharedPreferences.USER_ID, -1)
 
         binding?.run {
             lifecycleScope.launch {
@@ -58,12 +58,10 @@ class FilmDetailFragment : Fragment(R.layout.fragment_film_detail) {
 
     companion object {
         private const val ARG_FILM_ID = "arg_film_id"
-        private const val ARG_USER_ID = "arg_user_id"
 
-        fun newInstance(filmId: Int, userId: Int) = FilmDetailFragment().apply {
+        fun newInstance(filmId: Int) = FilmDetailFragment().apply {
             arguments = Bundle().apply {
                 putInt(ARG_FILM_ID, filmId)
-                putInt(ARG_USER_ID, userId)
             }
         }
     }

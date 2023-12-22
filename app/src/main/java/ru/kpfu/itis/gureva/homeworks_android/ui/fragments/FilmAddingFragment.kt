@@ -13,6 +13,7 @@ import ru.kpfu.itis.gureva.homeworks_android.data.db.AppDatabase
 import ru.kpfu.itis.gureva.homeworks_android.databinding.FragmentFilmAddingBinding
 import ru.kpfu.itis.gureva.homeworks_android.model.FilmModel
 import ru.kpfu.itis.gureva.homeworks_android.utils.FilmRepository
+import ru.kpfu.itis.gureva.homeworks_android.utils.RegexUtil
 
 class FilmAddingFragment : Fragment(R.layout.fragment_film_adding) {
     private var binding: FragmentFilmAddingBinding? = null
@@ -25,9 +26,7 @@ class FilmAddingFragment : Fragment(R.layout.fragment_film_adding) {
 
         binding?.run {
             btnSave.setOnClickListener {
-                val fieldsValid = checkFieldValidation()
-
-                if (fieldsValid) {
+                if (checkNameValid() and checkReleaseYearValid()) {
                     val name = etName.text.toString()
                     val year = etReleaseYear.text.toString().toInt()
                     val description = etDescription.text.toString()
@@ -54,23 +53,31 @@ class FilmAddingFragment : Fragment(R.layout.fragment_film_adding) {
         }
     }
 
-    private fun checkFieldValidation(): Boolean {
-        // убрать строчки
+    private fun checkNameValid(): Boolean {
         binding?.run {
             if (etName.text?.isEmpty() == true) {
-                etName.error = "Name can not be empty"
+                layoutName.error = getString(R.string.empty_name_error)
                 return false
             }
-            else if (etReleaseYear.text?.isEmpty() == true) {
-                etReleaseYear.error = "Release year can not be empty"
-                return false
-            }
-            else if (etDescription.text?.isEmpty() == true) {
-                etDescription.error = "Description can not be empty"
+            else if (!RegexUtil.check(RegexUtil.NAME, etName.text.toString())) {
+                layoutName.error = getString(R.string.invalid_name)
                 return false
             }
             else {
-                // убрать все ошибки с полей
+                layoutName.error = null
+            }
+        }
+        return true
+    }
+
+    private fun checkReleaseYearValid(): Boolean {
+        binding?.run {
+            if (etReleaseYear.text?.isEmpty() == true) {
+                layoutReleaseYear.error = getString(R.string.empty_release_year)
+                return false
+            }
+            else {
+                layoutReleaseYear.error = null
             }
         }
         return true

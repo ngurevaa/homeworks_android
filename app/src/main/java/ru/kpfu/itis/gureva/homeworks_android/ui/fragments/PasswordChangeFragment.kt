@@ -8,7 +8,10 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import ru.kpfu.itis.gureva.homeworks_android.R
 import ru.kpfu.itis.gureva.homeworks_android.data.db.AppDatabase
+import ru.kpfu.itis.gureva.homeworks_android.data.db.AppSharedPreferences
 import ru.kpfu.itis.gureva.homeworks_android.databinding.FragmentPasswordChangeBinding
+import ru.kpfu.itis.gureva.homeworks_android.utils.PasswordUtil
+import ru.kpfu.itis.gureva.homeworks_android.utils.RegexUtil
 import ru.kpfu.itis.gureva.homeworks_android.utils.UserRepository
 
 class PasswordChangeFragment : Fragment(R.layout.fragment_password_change) {
@@ -22,7 +25,8 @@ class PasswordChangeFragment : Fragment(R.layout.fragment_password_change) {
 
         userRepository = UserRepository(AppDatabase.getDatabase(requireContext()).userDao())
 
-        userId = arguments?.getInt(ARG_USER_ID) ?: 0
+        val i = AppSharedPreferences.getSP(requireContext()).getInt(AppSharedPreferences.USER_ID, -1)
+        if (i != -1) userId = i
 
         binding?.run {
             btnSave.setOnClickListener {
@@ -32,10 +36,9 @@ class PasswordChangeFragment : Fragment(R.layout.fragment_password_change) {
 
                     if (oldPasswordInput == oldPassword) {
                         val newPassword = etNewPassword.text.toString()
-                        // проверка пароля
-                        val passwordValid = true
-                        if (passwordValid) {
-                            userId?.let { userRepository?.changePassword(it, newPassword) }
+
+                        if (checkPasswordValid()) {
+                            userId?.let { userRepository?.changePassword(it, PasswordUtil.encrypt(newPassword)) }
 
                             AlertDialog.Builder(requireContext())
                                 .setTitle(getString(R.string.correct_password))
@@ -58,19 +61,26 @@ class PasswordChangeFragment : Fragment(R.layout.fragment_password_change) {
         }
     }
 
+    private fun checkPasswordValid(): Boolean {
+        binding?.run {
+            if (etNewPassword.text?.isEmpty() == true) {
+                layoutNewPassword.error = getString(R.string.empty_password_error)
+                return false
+            }
+            else if (!RegexUtil.check(RegexUtil.PASSWORD, etNewPassword.text.toString())) {
+                layoutNewPassword.error = getString(R.string.password_requirements)
+                return false
+            }
+            else {
+                layoutNewPassword.error = null
+            }
+        }
+        return true
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
         userRepository = null
-    }
-
-    companion object {
-        private const val ARG_USER_ID = "arg_user_id"
-
-        fun newInstance(userId: Int) = PasswordChangeFragment().apply {
-            arguments = Bundle().apply {
-                putInt(ARG_USER_ID, userId)
-            }
-        }
     }
 }

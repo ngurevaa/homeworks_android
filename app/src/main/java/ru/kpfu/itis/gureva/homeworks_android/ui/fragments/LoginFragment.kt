@@ -1,23 +1,18 @@
 package ru.kpfu.itis.gureva.homeworks_android.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.appcompat.app.AlertDialog
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import androidx.room.Room
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.kpfu.itis.gureva.homeworks_android.R
 import ru.kpfu.itis.gureva.homeworks_android.data.db.AppDatabase
+import ru.kpfu.itis.gureva.homeworks_android.data.db.AppSharedPreferences
 import ru.kpfu.itis.gureva.homeworks_android.databinding.FragmentLoginBinding
-import ru.kpfu.itis.gureva.homeworks_android.model.UserModel
+import ru.kpfu.itis.gureva.homeworks_android.utils.PasswordUtil
 import ru.kpfu.itis.gureva.homeworks_android.utils.UserRepository
-import java.lang.Exception
 
 class LoginFragment : Fragment(R.layout.fragment_login) {
     private var binding: FragmentLoginBinding? = null
@@ -29,20 +24,28 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
         binding = FragmentLoginBinding.bind(view)
         repository =  UserRepository(AppDatabase.getDatabase(requireContext()).userDao())
 
-        binding?.run {
-            btnSignIn.setOnClickListener {
-                val fieldsValid = checkFieldValidation()
-
-                if (fieldsValid) {
+        if (AppSharedPreferences.getSP(requireContext()).getBoolean(AppSharedPreferences.IS_LOGIN, false)) {
+            parentFragmentManager.beginTransaction()
+                .replace(fragmentContainerId, MainFragment())
+                .commit()
+        }
+        else {
+            binding?.run {
+                btnSignIn.setOnClickListener {
                     val email = etEmail.text.toString()
                     val password = etPassword.text.toString()
 
                     lifecycleScope.launch {
-                        val user = repository?.getByEmailAndPassword(email, password)
+                        val user = repository?.getByEmailAndPassword(email, PasswordUtil.encrypt(password))
 
                         if (user != null) {
+                            AppSharedPreferences.getSP(requireContext()).edit {
+                                putBoolean(AppSharedPreferences.IS_LOGIN, true)
+                                putInt(AppSharedPreferences.USER_ID, user.id)
+                            }
+
                             parentFragmentManager.beginTransaction()
-                                .replace(fragmentContainerId, MainFragment.newInstance(user.id))
+                                .replace(fragmentContainerId, MainFragment())
                                 .commit()
                         }
                         else {
@@ -54,29 +57,14 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                         }
                     }
                 }
-            }
 
-            btnSignUp.setOnClickListener {
-                parentFragmentManager.beginTransaction()
-                    .replace(fragmentContainerId, RegistrationFragment())
-                    .commit()
+                btnSignUp.setOnClickListener {
+                    parentFragmentManager.beginTransaction()
+                        .replace(fragmentContainerId, RegistrationFragment())
+                        .commit()
+                }
             }
         }
-    }
-
-    private fun checkFieldValidation(): Boolean {
-        // убрать строчки
-        binding?.run {
-            if (etEmail.text?.isEmpty() == true) {
-                etEmail.error = "Email can not be empty"
-                return false
-            }
-            else if (etPassword.text?.isEmpty() == true) {
-                etPassword.error = "Password can not be empty"
-                return false
-            }
-        }
-        return true
     }
 
     override fun onDestroyView() {

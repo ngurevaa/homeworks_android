@@ -6,12 +6,13 @@ import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import ru.kpfu.itis.gureva.homeworks_android.R
 import ru.kpfu.itis.gureva.homeworks_android.data.db.AppDatabase
 import ru.kpfu.itis.gureva.homeworks_android.databinding.FragmentRegistrationBinding
 import ru.kpfu.itis.gureva.homeworks_android.model.UserModel
+import ru.kpfu.itis.gureva.homeworks_android.utils.PasswordUtil
+import ru.kpfu.itis.gureva.homeworks_android.utils.RegexUtil
 import ru.kpfu.itis.gureva.homeworks_android.utils.UserRepository
 
 class RegistrationFragment : Fragment(R.layout.fragment_registration) {
@@ -26,18 +27,15 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
 
         binding?. run {
             btnSignUp.setOnClickListener {
-                val fieldValid = checkFieldValidation()
-
-                if (fieldValid) {
+                if (checkEmailValid() and checkPasswordValid() and checkNameValid() and checkPhoneValid()) {
                     val email = etEmail.text.toString()
-                    // хэшировать пароль
                     val password = etPassword.text.toString()
                     val phone = etPhone.text.toString()
                     val name = etName.text.toString()
 
                     lifecycleScope.launch {
                         try {
-                            repository?.save(UserModel(0, name, phone, email, password))
+                            repository?.save(UserModel(0, name, phone, email, PasswordUtil.encrypt(password)))
 
                             AlertDialog.Builder(requireContext())
                                 .setTitle(getString(R.string.registration_dialog_title))
@@ -51,7 +49,7 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
                                 }
                                 .show()
                         } catch (e: SQLiteConstraintException) {
-                            etEmail.error = getString(R.string.email_existing_error)
+                            layoutEmail.error = getString(R.string.email_existing_error)
                         }
                     }
                 }
@@ -59,23 +57,69 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
         }
     }
 
-    private fun checkFieldValidation(): Boolean {
+    private fun checkEmailValid(): Boolean {
         binding?.run {
             if (etEmail.text?.isEmpty() == true) {
-                etEmail.error = "Email can not be empty"
+                layoutEmail.error = getString(R.string.empty_email_error)
                 return false
             }
-            else if (etPassword.text?.isEmpty() == true) {
-                etPassword.error = "Password can not be empty"
+            else if (!RegexUtil.check(RegexUtil.EMAIL, etEmail.text.toString())) {
+                layoutEmail.error = getString(R.string.invalid_email)
                 return false
             }
-            else if (etName.text?.isEmpty() == true) {
-                etName.error = "Name can not be empty"
+            else {
+                layoutEmail.error = null
+            }
+        }
+        return true
+    }
+
+    private fun checkPasswordValid(): Boolean {
+        binding?.run {
+            if (etPassword.text?.isEmpty() == true) {
+                layoutPassword.error = getString(R.string.empty_password_error)
                 return false
             }
-            else if (etPhone.text?.isEmpty() == true) {
-                etPhone.error = "Phone can not be empty"
+            else if (!RegexUtil.check(RegexUtil.PASSWORD, etPassword.text.toString())) {
+                layoutPassword.error = getString(R.string.password_requirements)
                 return false
+            }
+            else {
+                layoutPassword.error = null
+            }
+        }
+        return true
+    }
+
+    private fun checkNameValid(): Boolean {
+        binding?.run {
+            if (etName.text?.isEmpty() == true) {
+                layoutName.error = getString(R.string.empty_name_error)
+                return false
+            }
+            else if (!RegexUtil.check(RegexUtil.NAME, etName.text.toString())) {
+                layoutName.error = getString(R.string.invalid_name)
+                return false
+            }
+            else {
+                layoutName.error = null
+            }
+        }
+        return true
+    }
+
+    private fun checkPhoneValid(): Boolean {
+        binding?.run {
+            if (etPhone.text?.isEmpty() == true) {
+                layoutPhone.error = getString(R.string.empty_phone_error)
+                return false
+            }
+            else if (!RegexUtil.check(RegexUtil.PHONE, etPhone.text.toString())) {
+                layoutPhone.error = getString(R.string.invalid_phone)
+                return false
+            }
+            else {
+                layoutPhone.error = null
             }
         }
         return true

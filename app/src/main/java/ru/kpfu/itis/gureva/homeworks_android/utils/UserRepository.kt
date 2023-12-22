@@ -35,4 +35,10 @@ class UserRepository(private val dao: UserDao) {
             dao.changePassword(id, password)
         }
     }
+
+    suspend fun deleteById(id: Int) {
+        withContext(Dispatchers.IO) {
+            dao.deleteById(id)
+        }
+    }
 }

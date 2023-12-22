@@ -35,4 +35,12 @@
         including uppercase and lowercase letters, numbers and special characters</string>
     <string name="correct_password">The password has been successfully changed</string>
     <string name="rating_hint">Rate the film</string>
+    <string name="empty_email_error">Email can not be empty</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="empty_password_error">Password can not be empty</string>
+    <string name="empty_name_error">Name can not be empty</string>
+    <string name="invalid_name">Name must consist only letters</string>
+    <string name="empty_phone_error">Phone can not be empty</string>
+    <string name="invalid_phone">Invalid phone</string>
+    <string name="empty_release_year">Release year can not be empty</string>
 </resources>

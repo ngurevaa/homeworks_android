@@ -1,17 +1,16 @@
 package ru.kpfu.itis.gureva.homeworks_android.ui.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.kpfu.itis.gureva.homeworks_android.R
 import ru.kpfu.itis.gureva.homeworks_android.data.db.AppDatabase
+import ru.kpfu.itis.gureva.homeworks_android.data.db.AppSharedPreferences
 import ru.kpfu.itis.gureva.homeworks_android.databinding.FragmentMainBinding
 import ru.kpfu.itis.gureva.homeworks_android.model.FilmModel
 import ru.kpfu.itis.gureva.homeworks_android.ui.adapter.FavouriteFilmAdapter
@@ -19,7 +18,6 @@ import ru.kpfu.itis.gureva.homeworks_android.ui.adapter.FilmAdapter
 import ru.kpfu.itis.gureva.homeworks_android.utils.FavouriteRepository
 import ru.kpfu.itis.gureva.homeworks_android.utils.FilmRepository
 import ru.kpfu.itis.gureva.homeworks_android.utils.RatingRepository
-import java.text.FieldPosition
 
 class MainFragment : Fragment(R.layout.fragment_main) {
     private val fragmentContainerId: Int = R.id.main_container
@@ -46,7 +44,8 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         initItemTouch()
         favouriteFilmAdapter = FavouriteFilmAdapter(::onLikeClicked, ::onFilmClicked)
 
-        userId = arguments?.getInt(ARG_USER_ID) ?: 0
+        val i = AppSharedPreferences.getSP(requireContext()).getInt(AppSharedPreferences.USER_ID, -1)
+        if (i != -1) userId = i
 
         binding?.run {
             btnAdd.setOnClickListener {
@@ -58,7 +57,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
             btnProfile.setOnClickListener {
                 parentFragmentManager.beginTransaction()
-                    .replace(fragmentContainerId, ProfileFragment.newInstance(userId!!))
+                    .replace(fragmentContainerId, ProfileFragment())
                     .addToBackStack(null)
                     .commit()
             }
@@ -116,7 +115,7 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private fun onFilmClicked(filmId: Int) {
         parentFragmentManager.beginTransaction()
-            .replace(fragmentContainerId, FilmDetailFragment.newInstance(filmId, userId!!))
+            .replace(fragmentContainerId, FilmDetailFragment.newInstance(filmId))
             .addToBackStack(null)
             .commit()
     }
@@ -176,15 +175,5 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         favouriteRepository = null
         allFilmsRepository = null
         ratingRepository = null
-    }
-
-    companion object {
-        private const val ARG_USER_ID = "arg_user_id"
-
-        fun newInstance(userId: Int) = MainFragment().apply {
-            arguments = Bundle().apply {
-                putInt(ARG_USER_ID, userId)
-            }
-        }
     }
 }

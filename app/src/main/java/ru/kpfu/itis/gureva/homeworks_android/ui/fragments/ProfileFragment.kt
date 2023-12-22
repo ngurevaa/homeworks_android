@@ -4,12 +4,15 @@ import android.database.sqlite.SQLiteConstraintException
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.edit
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
 import ru.kpfu.itis.gureva.homeworks_android.R
 import ru.kpfu.itis.gureva.homeworks_android.data.db.AppDatabase
+import ru.kpfu.itis.gureva.homeworks_android.data.db.AppSharedPreferences
 import ru.kpfu.itis.gureva.homeworks_android.databinding.FragmentProfileBinding
+import ru.kpfu.itis.gureva.homeworks_android.utils.RegexUtil
 import ru.kpfu.itis.gureva.homeworks_android.utils.UserRepository
 
 class ProfileFragment : Fragment(R.layout.fragment_profile) {
@@ -23,10 +26,10 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         userRepository = UserRepository(AppDatabase.getDatabase(requireContext()).userDao())
 
-        userId = arguments?.getInt(ARG_USER_ID) ?: 0
+        val i = AppSharedPreferences.getSP(requireContext()).getInt(AppSharedPreferences.USER_ID, -1)
+        if (i != -1) userId = i
 
         binding?.run {
-            // получить данные о профиле и высветить их
             lifecycleScope.launch {
                 val user = userRepository?.getById(userId!!)
                 tvName.text = "${getString(R.string.name_hint)}: ${user?.name}"
@@ -42,23 +45,24 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             }
 
             btnSavePhone.setOnClickListener {
-                // проверить телефон
                 val phone = etPhone.text.toString()
-                lifecycleScope.launch {
-                    userId?.let {
-                        try {
-                            userRepository?.changePhone(it, phone)
+                if (checkPhoneValid()) {
+                    lifecycleScope.launch {
+                        userId?.let {
+                            try {
+                                userRepository?.changePhone(it, phone)
 
-                            layoutPhone.visibility = View.GONE
-                            btnSavePhone.visibility = View.GONE
-                            btnEditPhone.visibility = View.VISIBLE
-                            tvPhone.visibility = View.VISIBLE
-                            tvPhone.text = "${getString(R.string.phone_hint)}: $phone"
-                        } catch (e: SQLiteConstraintException) {
-                            AlertDialog.Builder(requireContext())
-                                .setTitle(getString(R.string.phone_existing_error))
-                                .setPositiveButton(getString(R.string.btn_positive)) {_, _ ->}
-                                .show()
+                                layoutPhone.visibility = View.GONE
+                                btnSavePhone.visibility = View.GONE
+                                btnEditPhone.visibility = View.VISIBLE
+                                tvPhone.visibility = View.VISIBLE
+                                tvPhone.text = "${getString(R.string.phone_hint)}: $phone"
+                            } catch (e: SQLiteConstraintException) {
+                                AlertDialog.Builder(requireContext())
+                                    .setTitle(getString(R.string.phone_existing_error))
+                                    .setPositiveButton(getString(R.string.btn_positive)) {_, _ ->}
+                                    .show()
+                            }
                         }
                     }
                 }
@@ -66,20 +70,23 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
             btnChangePassword.setOnClickListener {
                 parentFragmentManager.beginTransaction()
-                    .replace(fragmentContainerId, PasswordChangeFragment.newInstance(userId!!))
+                    .replace(fragmentContainerId, PasswordChangeFragment())
                     .addToBackStack(null)
                     .commit()
             }
 
             btnExit.setOnClickListener {
+                AppSharedPreferences.getSP(requireContext()).edit {
+                    putBoolean(AppSharedPreferences.IS_LOGIN, false)
+                }
+
                 parentFragmentManager.beginTransaction()
                     .replace(fragmentContainerId, LoginFragment())
                     .commit()
             }
 
             btnDeleteProfile.setOnClickListener {
-                //удалить профиль из базы данных
-
+                lifecycleScope.launch { userId?.let { it1 -> userRepository?.deleteById(it1) } }
 
                 parentFragmentManager.beginTransaction()
                     .replace(fragmentContainerId, LoginFragment())
@@ -88,19 +95,26 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         }
     }
 
+    private fun checkPhoneValid(): Boolean {
+        binding?.run {
+            if (etPhone.text?.isEmpty() == true) {
+                layoutPhone.error = getString(R.string.empty_phone_error)
+                return false
+            }
+            else if (RegexUtil.check(RegexUtil.PHONE, etPhone.text.toString())) {
+                layoutPhone.error = getString(R.string.invalid_phone)
+                return false
+            }
+            else {
+                layoutPhone.error = null
+            }
+        }
+        return true
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
         userRepository = null
-    }
-
-    companion object {
-        private const val ARG_USER_ID = "arg_user_id"
-
-        fun newInstance(userId: Int) = ProfileFragment().apply {
-            arguments = Bundle().apply {
-                putInt(ARG_USER_ID, userId)
-            }
-        }
     }
 }

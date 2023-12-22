@@ -102,13 +102,6 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private suspend fun outputOfAllFilms() {
         allFilms = allFilmsRepository?.getAll() as MutableList<FilmModel>?
-//        allFilms?.forEach {film ->
-//            val status = userId?.let { favouriteRepository?.checkFilmStatus(it, film.id) }
-//            if (status != null) {
-//                film.isFavourite = status
-//            }
-//            film.rating = ratingRepository?.getByFilmId(film.id) ?: 0.0
-//        }
 
         val iterator = allFilms?.iterator()
         while (iterator?.hasNext() == true) {

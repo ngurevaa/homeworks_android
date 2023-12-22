@@ -11,8 +11,7 @@ data class FilmEntity(
     @PrimaryKey(autoGenerate = true) val id: Int,
     val name: String,
     @ColumnInfo(name = "release_year") val releaseYear: Int,
-    val description: String,
-    val rating: Double
+    val description: String
 ) {
-    fun toFilmModel(): FilmModel = FilmModel(id, name, releaseYear, description, rating, false)
+    fun toFilmModel(): FilmModel = FilmModel(id, name, releaseYear, description, 0.0, false)
 }

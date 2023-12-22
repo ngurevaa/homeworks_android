@@ -1,13 +1,15 @@
 package ru.kpfu.itis.gureva.homeworks_android.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.kpfu.itis.gureva.homeworks_android.R
 import ru.kpfu.itis.gureva.homeworks_android.data.db.AppDatabase
 import ru.kpfu.itis.gureva.homeworks_android.databinding.FragmentMainBinding
@@ -16,12 +18,15 @@ import ru.kpfu.itis.gureva.homeworks_android.ui.adapter.FavouriteFilmAdapter
 import ru.kpfu.itis.gureva.homeworks_android.ui.adapter.FilmAdapter
 import ru.kpfu.itis.gureva.homeworks_android.utils.FavouriteRepository
 import ru.kpfu.itis.gureva.homeworks_android.utils.FilmRepository
+import ru.kpfu.itis.gureva.homeworks_android.utils.RatingRepository
+import java.text.FieldPosition
 
 class MainFragment : Fragment(R.layout.fragment_main) {
     private val fragmentContainerId: Int = R.id.main_container
     private var binding: FragmentMainBinding? = null
     private var favouriteRepository: FavouriteRepository? = null
     private var allFilmsRepository: FilmRepository? = null
+    private var ratingRepository: RatingRepository? = null
     private var favouriteFilmAdapter: FavouriteFilmAdapter? = null
     private var filmAdapter: FilmAdapter? = null
     private var favouriteFilms: MutableList<FilmModel>? = null
@@ -35,15 +40,25 @@ class MainFragment : Fragment(R.layout.fragment_main) {
         favouriteRepository = FavouriteRepository(AppDatabase.getDatabase(requireContext()).favouriteDao(),
             AppDatabase.getDatabase(requireContext()).filmDao())
         allFilmsRepository = FilmRepository(AppDatabase.getDatabase(requireContext()).filmDao())
+        ratingRepository = RatingRepository(AppDatabase.getDatabase(requireContext()).ratingDao())
 
-        filmAdapter = FilmAdapter(::onLikeClicked)
-        favouriteFilmAdapter = FavouriteFilmAdapter(::onLikeClickedInFavourites)
+        filmAdapter = FilmAdapter(::onLikeClicked, ::onFilmClicked)
+        initItemTouch()
+        favouriteFilmAdapter = FavouriteFilmAdapter(::onLikeClicked, ::onFilmClicked)
 
         userId = arguments?.getInt(ARG_USER_ID) ?: 0
+
         binding?.run {
             btnAdd.setOnClickListener {
                 parentFragmentManager.beginTransaction()
                     .replace(fragmentContainerId, FilmAddingFragment())
+                    .addToBackStack(null)
+                    .commit()
+            }
+
+            btnProfile.setOnClickListener {
+                parentFragmentManager.beginTransaction()
+                    .replace(fragmentContainerId, ProfileFragment.newInstance(userId!!))
                     .addToBackStack(null)
                     .commit()
             }
@@ -57,13 +72,9 @@ class MainFragment : Fragment(R.layout.fragment_main) {
 
     private suspend fun outputOfFavouriteFilms() {
         favouriteFilms = userId?.let { favouriteRepository?.getAll(it) as MutableList<FilmModel>? }
-        binding?.run {
-            if (favouriteFilms?.size == 0) {
-                tvFavouriteFilms.visibility = View.GONE
-            }
-            rvFavouriteFilms.adapter = favouriteFilmAdapter
-            favouriteFilmAdapter?.submitList(favouriteFilms?.toList())
-        }
+        checkFavouriteFilmCount()
+        binding?.rvFavouriteFilms?.adapter = favouriteFilmAdapter
+        favouriteFilmAdapter?.submitList(favouriteFilms?.toList())
     }
 
     private suspend fun outputOfAllFilms() {
@@ -73,92 +84,102 @@ class MainFragment : Fragment(R.layout.fragment_main) {
             if (status != null) {
                 film.isFavourite = status
             }
+            film.rating = ratingRepository?.getByFilmId(film.id) ?: 0.0
         }
-        binding?.run {
-            if (allFilms?.size == 0) {
-                tvFilms.text = getString(R.string.no_available_films)
-            } else {
-                rvFilms.adapter = filmAdapter
-                filmAdapter?.submitList(allFilms?.toList())
-            }
-        }
+        allFilms?.sortByDescending { it.releaseYear }
+        checkAllFilmCount()
+
+        binding?.rvFilms?.adapter = filmAdapter
+        filmAdapter?.submitList(allFilms?.toList())
     }
 
     private fun onLikeClicked(filmModel: FilmModel) {
-//        Log.e("current", favouriteFilmAdapter?.currentList.toString())
-//        Log.e("films", favouriteFilms.toString())
         val index = allFilms?.indexOfFirst { it.id == filmModel.id }
         if (index != null) {
-            lifecycleScope.launch {
-                if (allFilms?.get(index)?.isFavourite == true) {
-                    userId?.let { favouriteRepository?.delete(it, filmModel.id) }
-                }
-                else {
-                    userId?.let { favouriteRepository?.save(it, filmModel.id) }
-                }
+            if (allFilms?.get(index)?.isFavourite == true) {
+                lifecycleScope.launch { userId?.let { favouriteRepository?.delete(it, filmModel.id) } }
+                favouriteFilms?.removeIf { it.id == filmModel.id }
             }
+            else {
+                lifecycleScope.launch { userId?.let { favouriteRepository?.save(it, filmModel.id) } }
+                favouriteFilms?.add(filmModel.copy().apply { isFavourite = true })
+            }
+            checkFavouriteFilmCount()
 
             val value = allFilms?.get(index)?.copy()
             allFilms?.removeAt(index)
             value?.apply { isFavourite = !isFavourite }?.let { allFilms?.add(index, it) }
-
-            if (value?.isFavourite == false) {
-                favouriteFilms?.removeIf { it.id == filmModel.id }
-            }
-            else {
-                value?.let { favouriteFilms?.add(it) }
-            }
         }
         filmAdapter?.submitList(allFilms?.toList())
         favouriteFilmAdapter?.submitList(favouriteFilms?.toList())
     }
 
-
-    private fun onLikeClickedInFavourites(filmModel: FilmModel) {
-//        val index = favouriteFilms?.indexOfFirst { it.id == filmModel.id }
-//        if (index != null) {
-//            lifecycleScope.launch {
-//                if (favouriteFilms?.get(index)?.isFavourite == true) {
-//                    userId?.let { favouriteRepository?.delete(it, filmModel.id) }
-//                }
-//                else {
-//                    userId?.let { favouriteRepository?.save(it, filmModel.id) }
-//                }
-//            }
-//
-//            val value = favouriteFilms?.get(index)?.copy()
-//            favouriteFilms?.removeAt(index)
-//            value?.apply { isFavourite = !isFavourite }?.let { favouriteFilms?.add(index, it) }
-//        }
-//        favouriteFilmAdapter?.submitList(favouriteFilms?.toList())
+    private fun onFilmClicked(filmId: Int) {
+        parentFragmentManager.beginTransaction()
+            .replace(fragmentContainerId, FilmDetailFragment.newInstance(filmId, userId!!))
+            .addToBackStack(null)
+            .commit()
     }
-    private fun click(films: MutableList<FilmModel>, filmModel: FilmModel, adapter: ListAdapter<FilmModel, RecyclerView.ViewHolder>) {
-        val index = films.indexOfFirst { it.id == filmModel.id }
-        lifecycleScope.launch {
-            if (films.get(index).isFavourite) {
-                userId?.let { favouriteRepository?.delete(it, filmModel.id) }
-            }
-            else {
-                userId?.let { favouriteRepository?.save(it, filmModel.id) }
+
+    private fun initItemTouch() {
+        val itemTouch = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                                target: RecyclerView.ViewHolder): Boolean = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                deleteFromAllFilms(viewHolder.adapterPosition)
             }
         }
-
-        val value = films.get(index).copy()
-        films.removeAt(index)
-        value.apply { isFavourite = !isFavourite }.let { films.add(index, it) }
-        adapter.submitList(films.toList())
+        ItemTouchHelper(itemTouch).attachToRecyclerView(binding?.rvFilms)
     }
 
+    private fun deleteFromAllFilms(position: Int) {
+        val filmId = allFilms?.get(position)?.id
+        lifecycleScope.launch {
+            filmId?.let { allFilmsRepository?.delete(it) }
+        }
+        allFilms?.removeAt(position)
+        favouriteFilms?.removeIf { it.id == filmId }
+
+        checkAllFilmCount()
+        checkFavouriteFilmCount()
+
+        filmAdapter?.submitList(allFilms?.toList())
+        favouriteFilmAdapter?.submitList(favouriteFilms?.toList())
+    }
+
+    private fun checkFavouriteFilmCount() {
+        binding?.run {
+            if (favouriteFilms?.size == 0) {
+                tvFavouriteFilms.visibility = View.GONE
+            }
+            else {
+                tvFavouriteFilms.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun checkAllFilmCount() {
+        binding?.run {
+            if (allFilms?.size == 0) {
+                tvFilms.text = getString(R.string.no_available_films)
+            }
+            else {
+                tvFilms.text = getString(R.string.all_films)
+            }
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
         favouriteRepository = null
         allFilmsRepository = null
+        ratingRepository = null
     }
 
     companion object {
-        const val ARG_USER_ID = "arg_user_id"
+        private const val ARG_USER_ID = "arg_user_id"
 
         fun newInstance(userId: Int) = MainFragment().apply {
             arguments = Bundle().apply {

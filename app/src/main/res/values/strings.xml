@@ -23,4 +23,16 @@
     <string name="film_saving_error_message">A film with the same name and year of release has already been saved in the film library/</string>
     <string name="film_saving_title">The film was saved successfully</string>
     <string name="no_available_films">No available films</string>
+    <string name="btn_profile">Profile</string>
+    <string name="btn_change_password">Change password</string>
+    <string name="btn_delete_profile">Delete profile</string>
+    <string name="btn_exit">Exit</string>
+    <string name="phone_existing_error">User with such an phone exist</string>
+    <string name="old_password_hint">Old password</string>
+    <string name="new_password_hint">New password</string>
+    <string name="password_mismatch_error">Invalid old password has been entered</string>
+    <string name="password_requirements">Password must consist of at least 8 characters,
+        including uppercase and lowercase letters, numbers and special characters</string>
+    <string name="correct_password">The password has been successfully changed</string>
+    <string name="rating_hint">Rate the film</string>
 </resources>

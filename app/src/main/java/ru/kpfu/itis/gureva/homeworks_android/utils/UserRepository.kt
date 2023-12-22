@@ -7,11 +7,6 @@ import ru.kpfu.itis.gureva.homeworks_android.model.UserModel
 
 class UserRepository(private val dao: UserDao) {
     suspend fun getByEmailAndPassword(email: String, password: String): UserModel? {
-//        var userModel: UserModel?
-//        withContext(Dispatchers.IO) {
-//            userModel = dao.getByEmailAndPassword(email, password)?.toUserModel()
-//        }
-//        return userModel
         return withContext(Dispatchers.IO) {
             return@withContext dao.getByEmailAndPassword(email, password)?.toUserModel()
         }
@@ -20,6 +15,24 @@ class UserRepository(private val dao: UserDao) {
     suspend fun save(userModel: UserModel) {
         withContext(Dispatchers.IO) {
             dao.save(userModel.toUserEntity())
+        }
+    }
+
+    suspend fun changePhone(id: Int, phone: String) {
+        withContext(Dispatchers.IO) {
+            dao.changePhone(id, phone)
+        }
+    }
+
+    suspend fun getById(id: Int): UserModel {
+        return withContext(Dispatchers.IO) {
+            return@withContext dao.getById(id).toUserModel()
+        }
+    }
+
+    suspend fun changePassword(id: Int, password: String) {
+        withContext(Dispatchers.IO) {
+            dao.changePassword(id, password)
         }
     }
 }

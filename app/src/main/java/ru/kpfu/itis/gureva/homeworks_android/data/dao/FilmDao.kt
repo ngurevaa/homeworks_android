@@ -12,8 +12,11 @@ interface FilmDao {
     fun save(film: FilmEntity)
 
     @Query("SELECT * FROM film WHERE id = :id")
-    fun get(id: Int): FilmEntity?
+    fun getById(id: Int): FilmEntity?
 
     @Query("SELECT * FROM film")
     fun getAll(): List<FilmEntity>?
+
+    @Query("DELETE FROM film WHERE id = :id")
+    fun delete(id: Int)
 }

@@ -22,4 +22,16 @@ class FilmRepository(private val dao: FilmDao) {
             return@withContext filmModels
         }
     }
+
+    suspend fun delete(id: Int) {
+        withContext(Dispatchers.IO) {
+            dao.delete(id)
+        }
+    }
+
+    suspend fun getById(id: Int): FilmModel? {
+        return withContext(Dispatchers.IO) {
+            return@withContext dao.getById(id)?.toFilmModel()
+        }
+    }
 }

@@ -7,12 +7,19 @@ import ru.kpfu.itis.gureva.homeworks_android.model.FilmModel
 
 class FavouriteFilmViewHolder(
     private val binding: ItemFavouriteFilmBinding,
-    private val onLikeClicked: (FilmModel) -> Unit
+    private val onLikeClicked: (FilmModel) -> Unit,
+    private val onFilmClicked: (Int) -> Unit
 ): RecyclerView.ViewHolder(binding.root) {
     private var film: FilmModel? = null
     init {
-        binding.ivLike.setOnClickListener {
-            film?.let { it1 -> onLikeClicked(it1) }
+        binding.run {
+            ivLike.setOnClickListener {
+                film?.let { it1 -> onLikeClicked(it1) }
+            }
+
+            root.setOnClickListener {
+                film?.let { film -> onFilmClicked(film.id) }
+            }
         }
     }
 

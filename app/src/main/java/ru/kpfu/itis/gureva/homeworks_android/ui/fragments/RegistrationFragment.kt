@@ -3,6 +3,7 @@ package ru.kpfu.itis.gureva.homeworks_android.ui.fragments
 import android.database.sqlite.SQLiteConstraintException
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -29,6 +30,7 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
 
                 if (fieldValid) {
                     val email = etEmail.text.toString()
+                    // хэшировать пароль
                     val password = etPassword.text.toString()
                     val phone = etPhone.text.toString()
                     val name = etName.text.toString()
@@ -37,7 +39,7 @@ class RegistrationFragment : Fragment(R.layout.fragment_registration) {
                         try {
                             repository?.save(UserModel(0, name, phone, email, password))
 
-                            MaterialAlertDialogBuilder(requireContext())
+                            AlertDialog.Builder(requireContext())
                                 .setTitle(getString(R.string.registration_dialog_title))
                                 .setMessage(getString(R.string.registration_dialog_message))
                                 .setPositiveButton(getString(R.string.btn_positive)) {_, _ ->

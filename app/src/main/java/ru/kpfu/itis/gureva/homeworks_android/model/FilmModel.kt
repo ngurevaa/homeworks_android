@@ -7,8 +7,8 @@ data class FilmModel(
     val name: String,
     val releaseYear: Int,
     val description: String,
-    val rating: Double,
+    var rating: Double,
     var isFavourite: Boolean
 ) {
-    fun toFilmEntity(): FilmEntity = FilmEntity(id, name, releaseYear, description, rating)
+    fun toFilmEntity(): FilmEntity = FilmEntity(id, name, releaseYear, description)
 }

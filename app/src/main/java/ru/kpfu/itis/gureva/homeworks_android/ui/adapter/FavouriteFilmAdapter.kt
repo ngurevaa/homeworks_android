@@ -12,14 +12,13 @@ import ru.kpfu.itis.gureva.homeworks_android.model.UserModel
 import ru.kpfu.itis.gureva.homeworks_android.ui.holder.FavouriteFilmViewHolder
 
 class FavouriteFilmAdapter(
-    private val onLikeClicked: (FilmModel) -> Unit
+    private val onLikeClicked: (FilmModel) -> Unit,
+    private val onFilmClicked: (Int) -> Unit
 ): ListAdapter<FilmModel, FavouriteFilmViewHolder>(object :
     DiffUtil.ItemCallback<FilmModel>() {
     override fun areItemsTheSame(oldItem: FilmModel, newItem: FilmModel): Boolean = oldItem.id == newItem.id
 
     override fun areContentsTheSame(oldItem: FilmModel, newItem: FilmModel): Boolean {
-        Log.e("old", oldItem.toString())
-        Log.e("new", newItem.toString())
         return oldItem == newItem
     }
 
@@ -36,7 +35,9 @@ class FavouriteFilmAdapter(
             LayoutInflater.from(parent.context),
             parent,
             false
-        ), onLikeClicked = onLikeClicked)
+        ),
+        onLikeClicked,
+        onFilmClicked)
     }
 
     override fun onBindViewHolder(holder: FavouriteFilmViewHolder, position: Int) {

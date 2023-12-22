@@ -15,7 +15,7 @@
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/btn_profile" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_favourite_films"
@@ -60,4 +60,13 @@
         app:srcCompat="@drawable/empty_heart"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"/>
+
+    <Button
+        android:id="@+id/btn_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/btn_profile"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

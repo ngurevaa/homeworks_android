@@ -1,19 +1,17 @@
 package ru.kpfu.itis.gureva.homeworks_android.ui.adapter
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import ru.kpfu.itis.gureva.homeworks_android.databinding.ItemFilmBinding
 import ru.kpfu.itis.gureva.homeworks_android.model.FilmModel
-import ru.kpfu.itis.gureva.homeworks_android.ui.holder.FavouriteFilmViewHolder
 import ru.kpfu.itis.gureva.homeworks_android.ui.holder.FilmViewHolder
 
 class FilmAdapter(
-    private val onLikeClicked: (FilmModel) -> Unit
+    private val onLikeClicked: (FilmModel) -> Unit,
+    private val onFilmClicked: (Int) -> Unit
 ): ListAdapter<FilmModel, FilmViewHolder>(object : DiffUtil.ItemCallback<FilmModel>() {
     // потом создать отдельный класс тк копия кода
     override fun areItemsTheSame(oldItem: FilmModel, newItem: FilmModel): Boolean = oldItem.id == newItem.id
@@ -36,7 +34,9 @@ class FilmAdapter(
             LayoutInflater.from(parent.context),
             parent,
             false
-        ), onLikeClicked)
+        ),
+        onLikeClicked,
+        onFilmClicked)
     }
 
     override fun onBindViewHolder(holder: FilmViewHolder, position: Int) {

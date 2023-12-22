@@ -14,7 +14,7 @@ class FavouriteRepository(
             val filmIdList = favouriteDao.getAll(userId)
             val films = ArrayList<FilmModel>()
             filmIdList?.forEach {
-                filmDao.get(it)?.let { film -> films.add(film.toFilmModel().apply { isFavourite = true }) }
+                filmDao.getById(it)?.let { film -> films.add(film.toFilmModel().apply { isFavourite = true }) }
             }
             return@withContext films
         }

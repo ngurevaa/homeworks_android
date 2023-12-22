@@ -14,10 +14,13 @@ interface UserDao {
 
     @Insert
     fun save(user: UserEntity)
-    //--------------------------------
 
-    @Query("DELETE FROM user WHERE id = :id")
-    fun deleteByUserId(id: Int)
-    @Query("SELECT * FROM user WHERE id = :id")
+    @Query("UPDATE user SET phone = :phone WHERE id = :id")
+    fun changePhone(id: Int, phone: String)
+
+    @Query("SELECT * from user WHERE id = :id")
     fun getById(id: Int): UserEntity
+
+    @Query("UPDATE user SET password = :password WHERE id = :id")
+    fun changePassword(id: Int, password: String)
 }

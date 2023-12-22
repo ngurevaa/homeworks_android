@@ -1,3 +1,52 @@
 <resources>
     <string name="app_name">homeworks_android</string>
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="btn_sign_in">Sign in</string>
+    <string name="sign_up_hint">Don\'t have an account?</string>
+    <string name="btn_sign_up">Sign up</string>
+    <string name="name_hint">Name</string>
+    <string name="phone_hint">Phone</string>
+    <string name="login_error_title">Login error</string>
+    <string name="login_error_message">Incorrect email or password. Please try again.</string>
+    <string name="btn_positive">OK</string>
+    <string name="registration_dialog_title">Registration was successful</string>
+    <string name="registration_dialog_message">Please, log in to your account.</string>
+    <string name="email_existing_error">User with such an email exists</string>
+    <string name="favourite_films">Favourite films</string>
+    <string name="all_films">All films sort by</string>
+    <string name="tv_add_film">Add film</string>
+    <string name="release_year_hint">Release year</string>
+    <string name="btn_save">Save</string>
+    <string name="description_hint">Description</string>
+    <string name="film_saving_error_title">Error</string>
+    <string name="film_saving_error_message">A film with the same name and year of release has already been saved in the film library/</string>
+    <string name="film_saving_title">The film was saved successfully</string>
+    <string name="no_available_films">No available films</string>
+    <string name="btn_profile">Profile</string>
+    <string name="btn_change_password">Change password</string>
+    <string name="btn_delete_profile">Delete profile</string>
+    <string name="btn_exit">Exit</string>
+    <string name="phone_existing_error">User with such an phone exist</string>
+    <string name="old_password_hint">Old password</string>
+    <string name="new_password_hint">New password</string>
+    <string name="password_mismatch_error">Invalid old password has been entered</string>
+    <string name="password_requirements">Password must consist of at least 8 characters,
+        including uppercase and lowercase letters, numbers and special characters</string>
+    <string name="correct_password">The password has been successfully changed</string>
+    <string name="rating_hint">Rate the film</string>
+    <string name="empty_email_error">Email can not be empty</string>
+    <string name="invalid_email">Invalid email</string>
+    <string name="empty_password_error">Password can not be empty</string>
+    <string name="empty_name_error">Name can not be empty</string>
+    <string name="invalid_name">Name must consist only letters</string>
+    <string name="empty_phone_error">Phone can not be empty</string>
+    <string name="invalid_phone">Invalid phone</string>
+    <string name="empty_release_year">Release year can not be empty</string>
+    <string-array name="sort">
+        <item>year of release in descending order</item>
+        <item>year of release in ascending order</item>
+        <item>rating in descending order</item>
+        <item>rating in ascending order</item>
+    </string-array>
 </resources>
